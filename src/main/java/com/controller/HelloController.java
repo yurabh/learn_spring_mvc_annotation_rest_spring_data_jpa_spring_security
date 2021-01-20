@@ -21,7 +21,7 @@ public class HelloController {
         return "Hello, MVC!";
     }
 
-    @RequestMapping(value = "/param", method = RequestMethod.POST)//localhost:9999/myapp/hello/param?name=John
+    @RequestMapping(value = "/param", method = RequestMethod.POST)
     public @ResponseBody
     String workWithParams(@RequestParam(value = "name", defaultValue = "Jack") String name) {
         return "You entered ".concat(name);

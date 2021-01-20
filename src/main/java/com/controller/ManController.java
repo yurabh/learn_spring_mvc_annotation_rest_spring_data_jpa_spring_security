@@ -44,13 +44,11 @@ public class ManController {
         headers.getLastModified();
         headers.get("findMan");
         return new ResponseEntity<Man>(CRUDServiceData.finById(id), headers, HttpStatus.FOUND);
-
     }
 
     @PutMapping(value = "/update")
     public void update(@RequestBody Man man) {
         crudService.update(man);
-//        throw new IllegalArgumentException("Man not found");
     }
 
     @DeleteMapping("/delete/{id}")
@@ -61,9 +59,6 @@ public class ManController {
     @GetMapping("/list")
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     public List<Man> findAll() {
-        if (1 == 1) {
-            throw new IllegalArgumentException("Man not found");
-        }
         return CRUDServiceData.findAllByAge(20);
     }
 
