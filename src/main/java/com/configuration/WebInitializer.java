@@ -2,10 +2,6 @@ package com.configuration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import javax.servlet.Filter;
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletRegistration;
-
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     protected Class<?>[] getRootConfigClasses() {
@@ -18,6 +14,5 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
     protected String[] getServletMappings() {
         return new String[]{"/myapp/*"};
-//        return new String[]{"/"};
     }
 }

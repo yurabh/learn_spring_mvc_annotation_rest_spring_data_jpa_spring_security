@@ -17,22 +17,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @ComponentScan(basePackages = "com")
-@Import(value = EncoderConfiguration.class)
+@Import(value = EncoderConfig.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    private final UserDetailsService userDetailsService;
 
     @Autowired
-    @Qualifier("myUserDetailsService")
-    private UserDetailsService userDetailsService;
-
- /*   @Autowired
     public SecurityConfig(BCryptPasswordEncoder passwordEncoder,
-                      UserDetailsService userDetailsService) {
+                          @Qualifier("myUserDetailsService") UserDetailsService userDetailsService) {
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
-    }*/
+    }
+
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -40,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder);
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -57,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout();
     }
 
-   /*@Override
+     /*@Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .inMemoryAuthentication()
@@ -68,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("Jack").password("$2a$10$nflkNpGmd54W/53vnR.dMulHg3DD.qfIQjqefYgiJOIrlb/YOxj3y")
                 .roles("USER", "ADMIN");//
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
