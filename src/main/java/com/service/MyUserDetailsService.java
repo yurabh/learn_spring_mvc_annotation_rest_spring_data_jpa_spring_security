@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +25,8 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-
+    public UserDetails loadUserByUsername(String userName) {
         User user = repository.findByName(userName);
-
         return buildUserForAuthentication(user);
     }
 
@@ -42,9 +39,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails buildUserForAuthentication(User user) {
-
         List<GrantedAuthority> authorities = getUserAuthority(user);
-
         return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(),
                 user.isActive(), true, true, true, authorities);
     }
