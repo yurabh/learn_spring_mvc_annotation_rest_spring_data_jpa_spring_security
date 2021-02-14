@@ -12,13 +12,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @Column(unique = true)
     private String name;
 
+    @Column
     private String password;
 
-    private boolean isActive;
+    @Column(nullable = false)
+    private boolean active;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
@@ -26,10 +29,10 @@ public class User {
     public User() {
     }
 
-    public User(String name, String password, boolean isActive) {
+    public User(String name, String password, boolean active) {
         this.name = name;
         this.password = password;
-        this.isActive = isActive;
+        this.active = active;
     }
 
     public int getId() {
@@ -57,11 +60,11 @@ public class User {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public Set<Role> getRoles() {
@@ -78,7 +81,7 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id &&
-                isActive == user.isActive &&
+                active == user.active &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(roles, user.roles);
@@ -86,7 +89,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password, isActive, roles);
+        return Objects.hash(id, name, password, active, roles);
     }
 
     @Override
@@ -95,7 +98,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", isActive=" + isActive +
+                ", active=" + active +
                 ", roles=" + roles +
                 '}';
     }
