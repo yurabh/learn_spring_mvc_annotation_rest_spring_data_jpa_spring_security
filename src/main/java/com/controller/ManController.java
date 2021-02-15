@@ -46,6 +46,7 @@ public class ManController {
         return new ResponseEntity<Man>(CRUDServiceData.finById(id), headers, HttpStatus.FOUND);
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PutMapping(value = "/update")
     public void update(@RequestBody Man man) {
         crudService.update(man);
@@ -64,7 +65,7 @@ public class ManController {
 
     @GetMapping("/get/dto")
     public ManDto findDto() {
-        Man man = crudService.finById(4);
+        Man man = crudService.finById(2);
         return new ManDto(man);
     }
 
