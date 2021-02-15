@@ -1,7 +1,8 @@
 package com.configuration;
 
+import com.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -10,7 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
@@ -22,11 +23,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    private final UserDetailsService userDetailsService;
+    private final MyUserDetailsService userDetailsService;
 
     @Autowired
     public SecurityConfig(BCryptPasswordEncoder passwordEncoder,
-                          @Qualifier("myUserDetailsService") UserDetailsService userDetailsService) {
+                          MyUserDetailsService userDetailsService) {
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
     }
@@ -34,54 +35,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(userDetailsService)
+        auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder);
     }
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+        http.cors()
+                .and()
+                .httpBasic()
+                .and()
+                .csrf()
+                .disable().authorizeRequests()
+                .antMatchers("/myapp/user/save")
+                .permitAll()
                 .antMatchers("/myapp/login*")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .csrf().disable()
                 .formLogin()
-                .defaultSuccessUrl("/myapp/hello/run", true)
+                .defaultSuccessUrl("/myapp/user/find{id}", true)
                 .and()
                 .logout();
     }
-
-     /*@Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder)
-                .withUser("John").password("$2a$10$8.7oG3lIQGJO9RjUF1KDnO/DlArDUDVM2IEA11ijaenypfSg81Osq")
-                .roles("USER")//123456
-                .and()
-                .withUser("Jack").password("$2a$10$nflkNpGmd54W/53vnR.dMulHg3DD.qfIQjqefYgiJOIrlb/YOxj3y")
-                .roles("USER", "ADMIN");//
-    }
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/myapp/login*")
-                .permitAll()
-                .antMatchers("/myapp/man/find/2").hasRole("ADMIN")
-                .anyRequest()
-                .authenticated()
-                .and()
-                .formLogin()
-                .defaultSuccessUrl("/myapp/hello/run", true)
-                .and()
-                .logout();
-    }*/
 }
